@@ -1,3 +1,9 @@
+import ssl
+import os
+
+# Bypass SSL certificate verification
+ssl._create_default_https_context = ssl._create_unverified_context
+
 import pandas as pd
 import mlflow
 import mlflow.sklearn
