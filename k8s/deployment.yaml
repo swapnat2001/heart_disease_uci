@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: heart-disease-api
+  labels:
+    app: heart-disease-ml
+spec:
+  replicas: 2  # Runs two instances for high availability and zero-downtime
+  selector:
+    matchLabels:
+      app: heart-disease-ml
+  template:
+    metadata:
+      labels:
+        app: heart-disease-ml
+    spec:
+      containers:
+      - name: api-container
+        image: heart-disease-mlops-api:latest  # The image built by your CI file
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

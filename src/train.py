@@ -1,6 +1,6 @@
 import ssl
 import os
-
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 # Bypass SSL certificate verification
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -50,6 +50,29 @@ def run_training():
         joblib.dump(model, "heart_disease_pipeline.joblib")
         mlflow.sklearn.log_model(model, "model")
         print(f"Model trained successfully. Test Accuracy: {acc:.4f}")
+
+        model = RandomForestClassifier(n_estimators=200, random_state=42)
+        model.fit(X_train, y_train)
+        
+        # Predict on the test set
+        y_pred = model.predict(X_test)
+        
+        # Calculate evaluation metrics
+        acc = accuracy_score(y_test, y_pred)
+        prec = precision_score(y_test, y_pred, zero_division=0)
+        rec = recall_score(y_test, y_pred, zero_division=0)
+        f1 = f1_score(y_test, y_pred, zero_division=0)
+        
+        # Log all metrics to MLflow
+        mlflow.log_metric("accuracy", acc)
+        mlflow.log_metric("precision", prec)
+        mlflow.log_metric("recall", rec)
+        mlflow.log_metric("f1_score", f1)
+        
+        # Standard target serialization dump
+        joblib.dump(model, "heart_disease_pipeline.joblib")
+        mlflow.sklearn.log_model(model, "model")
+        print(f"Model trained successfully. Test Accuracy: {acc:.4f} | F1: {f1:.4f}")
 
 if __name__ == "__main__":
     run_training()
