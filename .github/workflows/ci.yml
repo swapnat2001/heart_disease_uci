@@ -35,7 +35,7 @@ jobs:
     - name: Run Integrity & Target Constraint Assertions
       run: |
         # Executes your data constraint functions directly
-        pytest src/
+        pytest tests/test_core.py
 
   build-container:
     needs: validate-and-test
